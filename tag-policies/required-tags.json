@@ -1,0 +1,30 @@
+{
+    "tags": {
+        "ManagedBy": {
+            "tag_key": {
+                "@@assign": "ManagedBy"
+            },
+            "tag_value": {
+                "@@assign": [
+                    "Terraform",
+                    "Manual"
+                ]
+            }
+        },
+        "Project": {
+            "tag_key": {
+                "@@assign": "Project"
+            }
+        },
+        "Application": {
+            "tag_key": {
+                "@@assign": "Application"
+            }
+        },
+        "CostCenter": {
+            "tag_key": {
+                "@@assign": "CostCenter"
+            }
+        }
+    }
+}

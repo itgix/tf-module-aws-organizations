@@ -1,0 +1,24 @@
+####################################
+# Service Control Policies
+####################################
+
+resource "aws_organizations_policy" "ou_prod_policy" {
+  content     = templatefile("${path.module}/scp-policies/ou-prod-scp-policies.json", {})
+  name        = "OU Prod Policies"
+  type        = "SERVICE_CONTROL_POLICY"
+  description = "SCPs for OU Prod"
+}
+
+# resource "aws_organizations_policy" "ou_main_policy" {
+#   content     = templatefile("${path.module}/scp-policies/ou-main-scp-policies.json",{})
+#   name        = "OU Main Policies"
+#   type        = "SERVICE_CONTROL_POLICY"
+#   description = "SCPs for OU Main"
+# }
+
+# resource "aws_organizations_policy" "ou_non_prod_policy" {
+#   content     = templatefile("${path.module}/scp-policies/ou-non-prod-scp-policies.json",{})
+#   name        = "OU Non Prod Policies"
+#   type        = "SERVICE_CONTROL_POLICY"
+#   description = "SCPs for OU Non Prod"
+# }
