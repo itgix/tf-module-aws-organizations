@@ -8,6 +8,10 @@ output "audit_account_id" {
   value = aws_organizations_organizational_unit.main.accounts[1].id
 }
 
+output "security_account_id" {
+  value = aws_organizations_organizational_unit.main.accounts[2].id
+}
+
 output "dev_account_id" {
   value = aws_organizations_organizational_unit.non_prod.accounts[0].id
 }
