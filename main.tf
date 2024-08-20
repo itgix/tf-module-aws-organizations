@@ -1,3 +1,4 @@
+# TODO: should look into making the account amount to be a dynamic configuration instead of hardcoding
 resource "aws_organizations_organization" "default" {
   aws_service_access_principals = var.service_access_principals
 
@@ -30,6 +31,12 @@ resource "aws_organizations_account" "ou_main1" {
 resource "aws_organizations_account" "ou_main2" {
   name      = var.main_accounts[1]
   email     = var.main_accounts_emails[1]
+  parent_id = aws_organizations_organizational_unit.main.id
+}
+
+resource "aws_organizations_account" "ou_main3" {
+  name      = var.main_accounts[2]
+  email     = var.main_accounts_emails[2]
   parent_id = aws_organizations_organizational_unit.main.id
 }
 
