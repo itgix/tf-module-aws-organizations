@@ -24,7 +24,13 @@ resource "aws_organizations_policy" "tag_policy" {
 resource "aws_organizations_policy_attachment" "common_policy_attachment" {
   policy_id = aws_organizations_policy.tag_policy["required-tags"].id
   target_id = aws_organizations_organization.default.roots[0].id
-}
+}  ## TODO add cost center tag as required
+
+#        "CostCenter": {
+#           "tag_key": {
+#                "@@assign": "CostCenter"
+#            }
+#        }
 
 resource "aws_organizations_policy_attachment" "dev_policy_attachment" {
   policy_id = aws_organizations_policy.tag_policy["dev"].id

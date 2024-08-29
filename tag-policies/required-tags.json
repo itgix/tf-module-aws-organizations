@@ -20,11 +20,6 @@
             "tag_key": {
                 "@@assign": "Application"
             }
-        },
-        "CostCenter": {
-            "tag_key": {
-                "@@assign": "CostCenter"
-            }
         }
     }
 }
