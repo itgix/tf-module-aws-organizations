@@ -8,6 +8,32 @@ resource "aws_organizations_policy" "shared_policy" {
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCPs shared for all environments"
 }
+ ## TODO: add below requirements in the policy
+    # {
+    #   "Sid": "DenyCreateSecretWithNoCostCenterTag",
+    #   "Effect": "Deny",
+    #   "Action": "secretsmanager:CreateSecret",
+    #   "Resource": "*",
+    #   "Condition": {
+    #     "Null": {
+    #       "aws:RequestTag/CostCenter": "true"
+    #     }
+    #   }
+    # },
+    # {
+    #   "Sid": "DenyRunInstanceWithNoCostCenterTag",
+    #   "Effect": "Deny",
+    #   "Action": "ec2:RunInstances",
+    #   "Resource": [
+    #     "arn:aws:ec2:*:*:instance/*",
+    #     "arn:aws:ec2:*:*:volume/*"
+    #   ],
+    #   "Condition": {
+    #     "Null": {
+    #       "aws:RequestTag/CostCenter": "true"
+    #     }
+    #   }
+    # }
 
 # resource "aws_organizations_policy" "ou_prod_policy" {
 #   content     = templatefile("${path.module}/scp-policies/ou-prod-scp-policies.json", {})

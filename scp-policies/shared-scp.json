@@ -50,31 +50,6 @@
           "aws:RequestTag/Environment": "true"
         }
       }
-    },
-    {
-      "Sid": "DenyCreateSecretWithNoCostCenterTag",
-      "Effect": "Deny",
-      "Action": "secretsmanager:CreateSecret",
-      "Resource": "*",
-      "Condition": {
-        "Null": {
-          "aws:RequestTag/CostCenter": "true"
-        }
-      }
-    },
-    {
-      "Sid": "DenyRunInstanceWithNoCostCenterTag",
-      "Effect": "Deny",
-      "Action": "ec2:RunInstances",
-      "Resource": [
-        "arn:aws:ec2:*:*:instance/*",
-        "arn:aws:ec2:*:*:volume/*"
-      ],
-      "Condition": {
-        "Null": {
-          "aws:RequestTag/CostCenter": "true"
-        }
-      }
     }
   ]
 }
