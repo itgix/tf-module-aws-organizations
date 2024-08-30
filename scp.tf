@@ -2,12 +2,19 @@
 # Service Control Policies
 ####################################
 
-resource "aws_organizations_policy" "ou_prod_policy" {
-  content     = templatefile("${path.module}/scp-policies/ou-prod-scp-policies.json", {})
-  name        = "OU Prod Policies"
+resource "aws_organizations_policy" "shared_policy" {
+  content     = templatefile("${path.module}/scp-policies/shared-scp.json", {})
+  name        = "Shared SCP"
   type        = "SERVICE_CONTROL_POLICY"
-  description = "SCPs for OU Prod"
+  description = "SCPs shared for all environments"
 }
+
+# resource "aws_organizations_policy" "ou_prod_policy" {
+#   content     = templatefile("${path.module}/scp-policies/ou-prod-scp-policies.json", {})
+#   name        = "OU Prod Policies"
+#   type        = "SERVICE_CONTROL_POLICY"
+#   description = "SCPs for OU Prod"
+# }
 
 # resource "aws_organizations_policy" "ou_main_policy" {
 #   content     = templatefile("${path.module}/scp-policies/ou-main-scp-policies.json",{})

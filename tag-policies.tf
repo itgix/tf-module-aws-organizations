@@ -3,12 +3,12 @@
 ####################################
 
 locals {
-  policy_files = { for f in fileset("${path.module}/tag-policies", "*.json") : 
-                   split(".", basename(f))[0] => {
-                     name = split(".", basename(f))[0],
-                     path = f
-                   }
-                 }
+  policy_files = { for f in fileset("${path.module}/tag-policies", "*.json") :
+    split(".", basename(f))[0] => {
+      name = split(".", basename(f))[0],
+      path = f
+    }
+  }
 }
 
 resource "aws_organizations_policy" "tag_policy" {
@@ -24,7 +24,7 @@ resource "aws_organizations_policy" "tag_policy" {
 resource "aws_organizations_policy_attachment" "common_policy_attachment" {
   policy_id = aws_organizations_policy.tag_policy["required-tags"].id
   target_id = aws_organizations_organization.default.roots[0].id
-}  ## TODO add cost center tag as required
+} ## TODO add cost center tag as required
 
 #        "CostCenter": {
 #           "tag_key": {
