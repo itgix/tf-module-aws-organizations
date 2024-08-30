@@ -2,13 +2,12 @@
 # Service Control Policies
 ####################################
 
-# TODO: temporarily disable policy until we can test this in the lab env alogn with the container platform
-#resource "aws_organizations_policy" "shared_policy" {
-#content     = templatefile("${path.module}/scp-policies/shared-scp.json", {})
-#name        = "Shared SCP"
-#type        = "SERVICE_CONTROL_POLICY"
-#description = "SCPs shared for all environments"
-#}
+resource "aws_organizations_policy" "shared_policy" {
+  content     = templatefile("${path.module}/scp-policies/shared-scp.json", {})
+  name        = "Shared SCP"
+  type        = "SERVICE_CONTROL_POLICY"
+  description = "SCPs shared for all environments"
+}
 
 ## TODO: add below requirements in the policy
 # {
