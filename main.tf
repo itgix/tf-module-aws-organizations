@@ -22,6 +22,7 @@ resource "aws_organizations_organizational_unit" "prod" {
   parent_id = aws_organizations_organization.default.roots[0].id
 }
 
+# TODO: fix these resource names to match the account names that they are creating
 resource "aws_organizations_account" "ou_main1" {
   name      = var.main_accounts[0]
   email     = var.main_accounts_emails[0]
