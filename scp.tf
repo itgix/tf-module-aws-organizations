@@ -3,7 +3,7 @@
 ####################################
 
 resource "aws_organizations_policy" "shared_policy" {
-  content     = templatefile("${path.module}/scp-policies/shared-scp.json", {})
+  content     = templatefile("${path.module}/scp-policies/tagging-policy.json", {})
   name        = "Shared SCP"
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCPs shared for all environments"
