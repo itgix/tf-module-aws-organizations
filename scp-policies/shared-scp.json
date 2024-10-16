@@ -2,9 +2,34 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Effect": "Allow",
-      "Action": "*",
-      "Resource": "*"
+      "Sid": "",
+      "Sid": "MandatoryTags-EC2",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Project": "true",
+          "aws:RequestTag/Environment": "true"
+        }
+      }
+    },
+
+    {
+      "Sid": "MandatoryTags-SecretManager",
+      "Effect": "Deny",
+      "Action": "secretsmanager:CreateSecret",
+      "Resource": "*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Project": "true",
+          "aws:RequestTag/Environment": "true"
+        }
+      }
     }
+
   ]
 }
