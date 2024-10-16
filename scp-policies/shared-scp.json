@@ -2,7 +2,6 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "",
       "Sid": "MandatoryTags-EC2",
       "Effect": "Deny",
       "Action": "ec2:RunInstances",
