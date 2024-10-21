@@ -2,26 +2,22 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "DenyRunInstanceWithNoTags",
+      "Sid": "DenyResourcesWithoutTags",
       "Effect": "Deny",
-      "Action": "ec2:RunInstances",
-      "Resource": [
-        "arn:aws:ec2:*:*:instance/*"
+      "Action": [
+        "secretsmanager:CreateSecret",
+        "rds:CreateDBInstance",
+        "rds:CreateDBCluster",
+        "rds:CreateDBProxy",
+        "elasticache:CreateCacheCluster",
+        "elasticache:CreateReplicationGroup",
+        "dynamodb:CreateTable",
+        "dynamodb:CreateGlobalTable",
+        "lambda:CreateFunction",
+        "eks:CreateCluster",
+        "eks:CreateNodegroup",
+        "ec2:RunInstances"
       ],
-      "Condition": {
-        "Null": {
-          "aws:RequestTag/Project": "true",
-          "aws:RequestTag/Environment": "true",
-          "aws:RequestTag/CostCenter": "true",
-          "aws:RequestTag/Application": "true"
-        }
-      }
-    },
-
-    {
-      "Sid": "DenyCreateSecretWithNoTags",
-      "Effect": "Deny",
-      "Action": "secretsmanager:CreateSecret",
       "Resource": "*",
       "Condition": {
         "Null": {
