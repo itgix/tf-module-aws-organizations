@@ -6,17 +6,21 @@
       "Effect": "Deny",
       "Action": [
         "secretsmanager:CreateSecret",
-        "rds:CreateDBInstance",
-        "rds:CreateDBCluster",
-        "rds:CreateDBProxy",
         "elasticache:CreateCacheCluster",
         "elasticache:CreateReplicationGroup",
+        "elasticache:CreateServerlessCache",
         "dynamodb:CreateTable",
         "dynamodb:CreateGlobalTable",
+        "dynamodb:CreateTableReplica",
         "lambda:CreateFunction",
         "eks:CreateCluster",
         "eks:CreateNodegroup",
-        "ec2:RunInstances"
+        "ecs:CreateCluster",
+        "ecs:CreateService",
+        "rds:CreateDBInstance",
+        "rds:CreateDBCluster",
+        "rds:CreateDBProxy",
+        "rds:CreateGlobalCluster"
       ],
       "Resource": "*",
       "Condition": {
@@ -27,7 +31,25 @@
           "aws:RequestTag/Application": "true"
         }
       }
+    },
+    {
+      "Sid": "DenyEc2WithoutTags",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Project": "true",
+          "aws:RequestTag/Environment": "true",
+          "aws:RequestTag/CostCenter": "true",
+          "aws:RequestTag/Application": "true"
+        }
+      }
     }
-    
   ]
 }
