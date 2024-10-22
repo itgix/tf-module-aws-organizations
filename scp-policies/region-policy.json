@@ -53,13 +53,7 @@
                 "StringNotEquals": {
                     "aws:RequestedRegion": [
                         "eu-central-1",
-                        "eu-west-1"
-                    ]
-                },
-                "ArnNotLike": {
-                    "aws:PrincipalARN": [
-                        "arn:aws:iam::*:role/Role1AllowedToBypassThisSCP",
-                        "arn:aws:iam::*:role/Role2AllowedToBypassThisSCP"
+                        "us-east-1"
                     ]
                 }
             }
