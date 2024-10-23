@@ -19,11 +19,6 @@ resource "aws_organizations_policy_attachment" "iam_user_policy" {
   target_id = aws_organizations_organization.default.roots[0].id
 }
 
-resource "aws_organizations_policy_attachment" "prevent_leave_org_policy" {
-  policy_id = aws_organizations_policy.prevent_leave_org_policy.id
-  target_id = aws_organizations_organization.default.roots[0].id
-}
-
 resource "aws_organizations_policy_attachment" "prevent_unencrypt_ebs_prod" {
   policy_id = aws_organizations_policy.prevent_ebs_unencrypt_policy.id
   target_id = aws_organizations_organizational_unit.prod.id

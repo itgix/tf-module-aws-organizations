@@ -25,19 +25,12 @@ resource "aws_organizations_policy" "prevent_tf_delete_policy" {
 }
 
 # prevent creation of IAM users or access keys - they should be created only Identity Center
+# prevent any AWS account from leaving the organization
 resource "aws_organizations_policy" "iam_user_policy" {
   content     = templatefile("${path.module}/scp-policies/prevent-iam-user-creation.json", {})
   name        = "IAM USer Policy"
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCP that restricts the creation of IAM users in all accounts"
-}
-
-# prevent any AWS account from leaving the organization
-resource "aws_organizations_policy" "prevent_leave_org_policy" {
-  content     = templatefile("${path.module}/scp-policies/prevent-leave-org.json", {})
-  name        = "Prevent Leave Org Policy"
-  type        = "SERVICE_CONTROL_POLICY"
-  description = "SCP that restricts any accounts from leaving the organization"
 }
 
 resource "aws_organizations_policy" "prevent_ebs_unencrypt_policy" {
