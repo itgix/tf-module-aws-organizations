@@ -26,7 +26,7 @@ resource "aws_organizations_policy" "iam_user_policy" {
 }
 
 resource "aws_organizations_policy" "prevent_leave_org_policy" {
-  content     = templatefile("${path.module}/scp-policies/prevent-prevent_leave_org_policy.json", {})
+  content     = templatefile("${path.module}/scp-policies/prevent-leave-org.json", {})
   name        = "Prevent Leave Org Policy"
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCP that restricts any accounts from leaving the organization"
