@@ -25,6 +25,13 @@ resource "aws_organizations_policy" "iam_user_policy" {
   description = "SCP that restricts the creation of IAM users in all accounts"
 }
 
+resource "aws_organizations_policy" "prevent_leave_org_policy" {
+  content     = templatefile("${path.module}/scp-policies/prevent-prevent_leave_org_policy.json", {})
+  name        = "Prevent Leave Org Policy"
+  type        = "SERVICE_CONTROL_POLICY"
+  description = "SCP that restricts any accounts from leaving the organization"
+}
+
 # resource "aws_organizations_policy" "ou_prod_policy" {
 #   content     = templatefile("${path.module}/scp-policies/ou-prod-scp-policies.json", {})
 #   name        = "OU Prod Policies"
