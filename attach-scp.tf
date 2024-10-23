@@ -9,6 +9,11 @@ resource "aws_organizations_policy_attachment" "region_policy" {
   target_id = aws_organizations_organization.default.roots[0].id
 }
 
+resource "aws_organizations_policy_attachment" "iam_user_policy" {
+  policy_id = aws_organizations_policy.iam_user_policy.id
+  target_id = aws_organizations_organization.default.roots[0].id
+}
+
 # Attach to OUs
 #resource "aws_organizations_policy_attachment" "ou_prod_policy_attachment" {
 #policy_id = aws_organizations_policy.tagging_policy.id
