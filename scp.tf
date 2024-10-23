@@ -18,6 +18,13 @@ resource "aws_organizations_policy" "region_policy" {
   description = "SCP that restricts access to allowed AWS regions"
 }
 
+resource "aws_organizations_policy" "iam_user_policy" {
+  content     = templatefile("${path.module}/scp-policies/prevent-iam-user-creation.json", {})
+  name        = "IAM USer Policy"
+  type        = "SERVICE_CONTROL_POLICY"
+  description = "SCP that restricts the creation of IAM users in all accounts"
+}
+
 # resource "aws_organizations_policy" "ou_prod_policy" {
 #   content     = templatefile("${path.module}/scp-policies/ou-prod-scp-policies.json", {})
 #   name        = "OU Prod Policies"
