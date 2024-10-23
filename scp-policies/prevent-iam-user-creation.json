@@ -1,0 +1,14 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "iam:CreateUser",
+                "iam:CreateAccessKey",
+                "iam:CreateGroup"
+            ],
+            "Resource": "*",
+            "Effect": "Deny"
+        }
+    ]
+}

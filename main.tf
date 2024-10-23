@@ -59,25 +59,6 @@ resource "aws_organizations_account" "ou_prod1" {
   parent_id = aws_organizations_organizational_unit.prod.id
 }
 
-####################################
-# Attaching SCPs to Org Units  
-####################################
-
-resource "aws_organizations_policy_attachment" "ou_prod_policy_attachment" {
-  policy_id = aws_organizations_policy.shared_policy.id
-  target_id = aws_organizations_organizational_unit.prod.id
-}
-
-resource "aws_organizations_policy_attachment" "ou_main_policy_attachment" {
-  policy_id = aws_organizations_policy.shared_policy.id
-  target_id = aws_organizations_organizational_unit.main.id
-}
-
-resource "aws_organizations_policy_attachment" "ou_non_prod_policy_attach" {
-  policy_id = aws_organizations_policy.shared_policy.id
-  target_id = aws_organizations_organizational_unit.non_prod.id
-}
-
 ######################################
 # Attaching Tag Policies to Org Units  
 ######################################
