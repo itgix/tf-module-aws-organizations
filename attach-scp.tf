@@ -9,6 +9,11 @@ resource "aws_organizations_policy_attachment" "region_policy" {
   target_id = aws_organizations_organization.default.roots[0].id
 }
 
+resource "aws_organizations_policy_attachment" "prevent_tf_delete_policy" {
+  policy_id = aws_organizations_policy.prevent_tf_delete_policy.id
+  target_id = aws_organizations_organization.default.roots[0].id
+}
+
 resource "aws_organizations_policy_attachment" "iam_user_policy" {
   policy_id = aws_organizations_policy.iam_user_policy.id
   target_id = aws_organizations_organization.default.roots[0].id
