@@ -10,7 +10,7 @@
       "Resource": "arn:aws:s3:::*",
       "Condition": {
         "StringEquals": {
-          "s3:RequestObjectTag/TerraformState": "True"
+          "aws:RequestTag/TerraformState": "true"
         }
       }
     }
