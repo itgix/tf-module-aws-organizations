@@ -32,23 +32,23 @@ resource "aws_organizations_policy_attachment" "prevent_unencrypt_ebs_non_prod" 
   target_id = aws_organizations_organizational_unit.non_prod.id
 }
 
-# Cloudtrail - main
-resource "aws_organizations_policy_attachment" "prevent_cloudtrail_delete_main" {
-  policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
-  target_id = aws_organizations_organizational_unit.main.id
-}
+## Cloudtrail - main
+#resource "aws_organizations_policy_attachment" "prevent_cloudtrail_delete_main" {
+#policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
+#target_id = aws_organizations_organizational_unit.main.id
+#}
 
-# Cloudtrail - non-prod
-resource "aws_organizations_policy_attachment" "prevent_cloudtrail_delete_non_prod" {
-  policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
-  target_id = aws_organizations_organizational_unit.non_prod.id
-}
+## Cloudtrail - non-prod
+#resource "aws_organizations_policy_attachment" "prevent_cloudtrail_delete_non_prod" {
+#policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
+#target_id = aws_organizations_organizational_unit.non_prod.id
+#}
 
-# Cloudtrail - prod
-resource "aws_organizations_policy_attachment" "prevent_cloudtrail_delete_prod" {
-  policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
-  target_id = aws_organizations_organizational_unit.prod.id
-}
+## Cloudtrail - prod
+#resource "aws_organizations_policy_attachment" "prevent_cloudtrail_delete_prod" {
+#policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
+#target_id = aws_organizations_organizational_unit.prod.id
+#}
 
 ## Accounts policies
 resource "aws_organizations_policy_attachment" "cloudtrail_logs" {

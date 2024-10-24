@@ -11,6 +11,18 @@
         "organizations:LeaveOrganization"
       ],
       "Resource": "*"
+    },
+    {
+      "Sid": "PreventDisableCloudtrail",
+      "Effect": "Deny",
+      "Action": [
+        "cloudtrail:StopLogging",
+        "cloudtrail:DeleteTrail",
+        "cloudtrail:UpdateTrail"
+      ],
+      "Resource": [
+        "arn:aws:cloudtrail:*:*:trail/*"
+      ]
     }
   ]
 }

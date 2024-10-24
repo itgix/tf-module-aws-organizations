@@ -24,9 +24,9 @@ resource "aws_organizations_policy" "prevent_tf_delete_policy" {
   description = "SCP that prevents deletion of S3 bucket or Terraform state inside it"
 }
 
-# TODO: started combining here because of SCP limits
 # prevent creation of IAM users or access keys - they should be created only Identity Center
 # prevent any AWS account from leaving the organization
+# prevent Cloudtrail from being disabled
 resource "aws_organizations_policy" "combined_org_policy" {
   content     = templatefile("${path.module}/scp-policies/combined-org-policy.json", {})
   name        = "Combined Org Policy"
