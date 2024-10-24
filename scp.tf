@@ -26,7 +26,7 @@ resource "aws_organizations_policy" "prevent_tf_delete_policy" {
 
 # prevent creation of IAM users or access keys - they should be created only Identity Center
 # prevent any AWS account from leaving the organization
-# prevent Cloudtrail from being disabled
+# prevent deletion of cloudtrail in all accounts
 resource "aws_organizations_policy" "combined_org_policy" {
   content     = templatefile("${path.module}/scp-policies/combined-org-policy.json", {})
   name        = "Combined Org Policy"
@@ -34,19 +34,12 @@ resource "aws_organizations_policy" "combined_org_policy" {
   description = "Combined Organizational SCP that restricts IAM user creation, disabling of EBS volume restriction, and accounts to be able to leave the organization"
 }
 
+# prevent disabled EBS volume encryption in application accounts
 resource "aws_organizations_policy" "prevent_ebs_unencrypt_policy" {
   content     = templatefile("${path.module}/scp-policies/ebs-encryption.json", {})
   name        = "Prevent EBS Unencrypt Policy"
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCP that restricts disabling encryption on EBS volumes"
-}
-
-# prevent deletion of cloudtrail in all accounts
-resource "aws_organizations_policy" "prevent_cloudtrail_delete" {
-  content     = templatefile("${path.module}/scp-policies/cloudtrail.json", {})
-  name        = "Cloudtrail Policy"
-  type        = "SERVICE_CONTROL_POLICY"
-  description = "SCP that restricts disabling Cloudtrail in all accounts"
 }
 
 # prevent deletion of cloudtrail logs in audit account
