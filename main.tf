@@ -23,18 +23,21 @@ resource "aws_organizations_organizational_unit" "prod" {
 }
 
 # TODO: fix these resource names to match the account names that they are creating
+# Shared Services account 
 resource "aws_organizations_account" "ou_main1" {
   name      = var.main_accounts[0]
   email     = var.main_accounts_emails[0]
   parent_id = aws_organizations_organizational_unit.main.id
 }
 
+# Logging and Audit account
 resource "aws_organizations_account" "ou_main2" {
   name      = var.main_accounts[1]
   email     = var.main_accounts_emails[1]
   parent_id = aws_organizations_organizational_unit.main.id
 }
 
+# Security account
 resource "aws_organizations_account" "ou_main3" {
   name      = var.main_accounts[2]
   email     = var.main_accounts_emails[2]
