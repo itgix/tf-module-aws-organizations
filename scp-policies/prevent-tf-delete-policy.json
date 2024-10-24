@@ -8,14 +8,9 @@
         "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::*",
-        "arn:aws:s3:::*/*"
-      ],
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestTag/TerraformState": "true"
-        }
-      }
+        "arn:aws:s3:::*-tf-state-backend",
+        "arn:aws:s3:::*-tf-state-backend/*.tfstate"
+      ]
     }
   ]
 }
