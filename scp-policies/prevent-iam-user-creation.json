@@ -1,15 +1,16 @@
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": [
-                "iam:CreateUser",
-                "iam:CreateAccessKey",
-                "iam:CreateGroup",
-                "organizations:LeaveOrganization"
-            ],
-            "Resource": "*",
-            "Effect": "Deny"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PreventIAMUser",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateUser",
+        "iam:CreateAccessKey",
+        "iam:CreateGroup",
+        "organizations:LeaveOrganization"
+      ],
+      "Resource": "*"
+    }
+  ]
 }
