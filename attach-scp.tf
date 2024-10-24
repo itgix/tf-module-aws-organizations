@@ -19,11 +19,6 @@ resource "aws_organizations_policy_attachment" "combined_org_policy" {
   target_id = aws_organizations_organization.default.roots[0].id
 }
 
-resource "aws_organizations_policy_attachment" "cloudtrail_policy" {
-  policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
-  target_id = aws_organizations_organization.default.roots[0].id
-}
-
 ## OUs policies
 # EBS - prod
 resource "aws_organizations_policy_attachment" "prevent_unencrypt_ebs_prod" {
