@@ -7,11 +7,15 @@
       "Action": "*",
       "Resource": "*",
       "Condition": {
-        "ArnNotLike": {
-          "aws:PrincipalARN": [
-            "arn:${PARTITION}:iam::*:role/${MANAGEMENT_ACCOUNT_ACCESS_ROLE}"
-          ]
-        }
+          "StringNotEquals": {
+              "aws:PrincipalArn": [
+                "arn:aws:iam::767398095708:role/security-incident-response",
+                "arn:aws:iam::905418051897:role/security-incident-response",
+                "arn:aws:iam::381492288235:role/security-incident-response",
+                "arn:aws:iam::590183971189:role/security-incident-response",
+                "arn:aws:iam::905418054535:role/security-incident-response"
+              ]
+          }
       }
     }
   ]
