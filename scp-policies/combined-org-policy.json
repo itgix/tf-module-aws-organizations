@@ -13,6 +13,25 @@
       "Resource": "*"
     },
     {
+      "Sid": "PreventAccountFromLeavingOrg",
+      "Effect": "Deny",
+      "Action": [
+        "organizations:LeaveOrganization"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "PreventDisablingKMSKey",
+      "Effect": "Deny",
+      "Action": [
+        "kms:ScheduleKeyDeletion",
+        "kms:DeleteCustomKeyStore",
+        "kms:DisableKey",
+        "kms:DisableKeyRotation"
+      ],
+      "Resource": "*"
+    },
+    {
       "Sid": "PreventDisableCloudtrail",
       "Effect": "Deny",
       "Action": [

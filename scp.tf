@@ -50,3 +50,12 @@ resource "aws_organizations_policy" "prevent_cloudtrail_logs_delete" {
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCP that restricts deleting Cloudtrail logs from the Audit account's S3 bucket"
 }
+
+# policy that can be used to quarantine an account or OU by restricting access to all services except a specific role that can be used for investigating security incidents
+# TODO: prepare a quarantine role in all accounts
+resource "aws_organizations_policy" "quarantine_policy" {
+  content     = templatefile("${path.module}/scp-policies/quarantine-policy.json", {})
+  name        = "Quarantine Policy"
+  type        = "SERVICE_CONTROL_POLICY"
+  description = "SCP that can be assigned on any account or OU to quarantine it by restricting access to all services except a certain role that will be used for security incident investigation"
+}
