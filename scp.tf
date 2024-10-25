@@ -45,7 +45,7 @@ resource "aws_organizations_policy" "prevent_ebs_unencrypt_policy" {
 # prevent deletion of cloudtrail logs in audit account
 resource "aws_organizations_policy" "prevent_cloudtrail_logs_delete" {
   content     = templatefile("${path.module}/scp-policies/cloudtrail-logs.json", {})
-  name        = "Cloudtrail Policy"
+  name        = "Cloudtrail Logs Policy"
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCP that restricts deleting Cloudtrail logs from the Audit account's S3 bucket"
 }
