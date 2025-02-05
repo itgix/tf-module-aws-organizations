@@ -1,5 +1,7 @@
 # DynamoDB doesn't support ABAC so we cannot restrict creating dynamodb tables without tags
 # RDS has a bug with AWS console where when you create an RDS cluster with tags, its tags are not propagated down to the RDS instance and if we have an SCP that restricts creation of RDS instances without tags, we encounter this problem where an RDS aurora cluster cannot be created from AWS console, it does not affect creating an RDS instance, and it also does not affect creating an RDS cluster from SDK or CLI
+# EC2 instances create and attach volumes, so SCP must include both "instance/*" and "volume/*" to avoid failures.
+# ElastiCache Replication Group depends on parameter groups, so SCP must target "replicationgroup:*" to avoid unintended denials.
 # prevent creation of resources without mandatory tags - Application, Environment, CostCenter, Project
 resource "aws_organizations_policy" "tagging_policy" {
   content     = templatefile("${path.module}/scp-policies/tagging.json", {})
