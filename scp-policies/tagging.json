@@ -7,7 +7,6 @@
       "Action": [
         "secretsmanager:CreateSecret",
         "elasticache:CreateCacheCluster",
-        "elasticache:CreateReplicationGroup",
         "elasticache:CreateServerlessCache",
         "lambda:CreateFunction",
         "eks:CreateCluster",
@@ -20,6 +19,22 @@
         "rds:CreateGlobalCluster"
       ],
       "Resource": "*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Project": "true",
+          "aws:RequestTag/Environment": "true",
+          "aws:RequestTag/CostCenter": "true",
+          "aws:RequestTag/Application": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyElastiCacheReplicationGroupWithoutTags",
+      "Effect": "Deny",
+      "Action": "elasticache:CreateReplicationGroup",
+      "Resource": [
+        "arn:aws:elasticache:*:*:replicationgroup:*"
+      ],
       "Condition": {
         "Null": {
           "aws:RequestTag/Project": "true",
