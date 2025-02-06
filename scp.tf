@@ -28,6 +28,7 @@ resource "aws_organizations_policy" "prevent_tf_delete_policy" {
 
 # prevent creation of IAM users or access keys - they should be created only Identity Center
 # prevent any AWS account from leaving the organization
+# prevent disabling a KMS key, deleting custom key store, scheduling key for deletion and disabling key rotation
 # prevent deletion of cloudtrail in all accounts
 # prevent S3 upload without encryption
 resource "aws_organizations_policy" "combined_org_policy" {
