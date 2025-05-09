@@ -54,5 +54,5 @@ resource "aws_organizations_policy_attachment" "prevent_unencrypt_ebs_non_prod" 
 resource "aws_organizations_policy_attachment" "cloudtrail_logs" {
   policy_id = aws_organizations_policy.prevent_cloudtrail_logs_delete.id
   # attach to Loggging and Audit account
-  target_id = aws_organizations_organizational_unit.main.accounts[0].id
+  target_id = aws_organizations_organizational_unit.main.accounts[1].id
 }
