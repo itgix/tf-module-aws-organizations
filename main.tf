@@ -58,6 +58,12 @@ resource "aws_organizations_account" "ou_prod1" {
   parent_id = aws_organizations_organizational_unit.prod.id
 }
 
+resource "aws_organizations_account" "ou_prod2" {
+  name      = var.prod_accounts[1]
+  email     = var.prod_accounts_emails[1]
+  parent_id = aws_organizations_organizational_unit.prod.id
+}
+
 ####################################
 # Attaching SCPs to Org Units  
 ####################################
