@@ -19,40 +19,37 @@ resource "aws_organizations_policy_attachment" "combined_org_policy" {
   target_id = aws_organizations_organization.default.roots[0].id
 }
 
-## OUs policies
-# EBS - prod
-resource "aws_organizations_policy_attachment" "prevent_unencrypt_ebs_prod" {
-  policy_id = aws_organizations_policy.prevent_ebs_unencrypt_policy.id
-  target_id = aws_organizations_organizational_unit.prod.id
+
+############### NEW METHOD FOR OU POLICIES ATTACHMENT ####################
+
+locals {
+  scp_map = {
+    tagging_policy                 = aws_organizations_policy.tagging_policy.id
+    region_policy                  = aws_organizations_policy.region_policy.id
+    prevent_tf_delete_policy       = aws_organizations_policy.prevent_tf_delete_policy.id
+    combined_org_policy            = aws_organizations_policy.combined_org_policy.id
+    prevent_ebs_unencrypt_policy   = aws_organizations_policy.prevent_ebs_unencrypt_policy.id
+    prevent_cloudtrail_logs_delete = aws_organizations_policy.prevent_cloudtrail_logs_delete.id
+    quarantine_policy              = aws_organizations_policy.quarantine_policy.id
+  }
+
+  scp_ou_pairs = [
+    for pair in var.scp_attachments : {
+      policy_name = pair.policy_name
+      policy_id   = local.scp_map[pair.policy_name]
+      ou_name     = pair.ou_name
+      ou_id       = aws_organizations_organizational_unit.ous[pair.ou_name].id
+    }
+  ]
 }
 
-# EBS - non-prod
-resource "aws_organizations_policy_attachment" "prevent_unencrypt_ebs_non_prod" {
-  policy_id = aws_organizations_policy.prevent_ebs_unencrypt_policy.id
-  target_id = aws_organizations_organizational_unit.non_prod.id
-}
+resource "aws_organizations_policy_attachment" "scp_to_ou" {
+  for_each = {
+    for pair in local.scp_ou_pairs :
+    #TODO: See how to move ou_name into a list 
+    "${pair.ou_name}-${pair.policy_name}" => pair
+  }
 
-## Cloudtrail - main
-#resource "aws_organizations_policy_attachment" "prevent_cloudtrail_delete_main" {
-#policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
-#target_id = aws_organizations_organizational_unit.main.id
-#}
-
-## Cloudtrail - non-prod
-#resource "aws_organizations_policy_attachment" "prevent_cloudtrail_delete_non_prod" {
-#policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
-#target_id = aws_organizations_organizational_unit.non_prod.id
-#}
-
-## Cloudtrail - prod
-#resource "aws_organizations_policy_attachment" "prevent_cloudtrail_delete_prod" {
-#policy_id = aws_organizations_policy.prevent_cloudtrail_delete.id
-#target_id = aws_organizations_organizational_unit.prod.id
-#}
-
-## Accounts policies
-resource "aws_organizations_policy_attachment" "cloudtrail_logs" {
-  policy_id = aws_organizations_policy.prevent_cloudtrail_logs_delete.id
-  # attach to Loggging and Audit account
-  target_id = aws_organizations_organizational_unit.main.accounts[1].id
+  policy_id = each.value.policy_id
+  target_id = each.value.ou_id
 }

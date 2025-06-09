@@ -2,8 +2,10 @@
 # Tag Policies
 ####################################
 
+# 1. Collect all tag policy files
 locals {
-  policy_files = { for f in fileset("${path.module}/tag-policies", "*.json") :
+  tag_policy_files = {
+    for f in fileset("${path.module}/tag-policies", "*.json") :
     split(".", basename(f))[0] => {
       name = split(".", basename(f))[0],
       path = f
@@ -11,8 +13,9 @@ locals {
   }
 }
 
+# 2. Create policies from those files
 resource "aws_organizations_policy" "tag_policy" {
-  for_each = local.policy_files
+  for_each = local.tag_policy_files
 
   name        = each.value.name
   description = "Tag policy - ${each.value.name}"
@@ -20,44 +23,39 @@ resource "aws_organizations_policy" "tag_policy" {
   type        = "TAG_POLICY"
 }
 
-# Attach a common policy like 'Required Tags' to the root to reflect all OUs
-resource "aws_organizations_policy_attachment" "common_policy_attachment" {
-  policy_id = aws_organizations_policy.tag_policy["required-tags"].id
-  target_id = aws_organizations_organization.default.roots[0].id
-} ## TODO add cost center tag as required
-
-#        "CostCenter": {
-#           "tag_key": {
-#                "@@assign": "CostCenter"
-#            }
-#        }
-
-resource "aws_organizations_policy_attachment" "dev_policy_attachment" {
-  policy_id = aws_organizations_policy.tag_policy["dev"].id
-  target_id = aws_organizations_account.ou_non_prod1.id
+# 3. Map policy names to their IDs (after resource is created)
+locals {
+  tag_policy_map = {
+    for name in keys(local.tag_policy_files) :
+    name => aws_organizations_policy.tag_policy[name].id
+  }
 }
 
-resource "aws_organizations_policy_attachment" "stage_policy_attachment" {
-  policy_id = aws_organizations_policy.tag_policy["stage"].id
-  target_id = aws_organizations_account.ou_non_prod2.id
+# 4. Build target attachments
+locals {
+  tag_policy_attachments = [
+    for pair in var.tag_policy_attachments : {
+      policy_name = pair.policy_name
+      policy_id   = local.tag_policy_map[pair.policy_name]
+      target_type = pair.target_type
+      target_key  = pair.target_key
+      target_id = (
+        pair.target_type == "root" ? aws_organizations_organization.default.roots[0].id :
+        pair.target_type == "account" ? aws_organizations_account.accounts[pair.target_key].id :
+        pair.target_type == "ou" ? aws_organizations_organizational_unit.ous[pair.target_key].id :
+        null
+      )
+    }
+  ]
 }
 
-resource "aws_organizations_policy_attachment" "production_policy_attachment" {
-  policy_id = aws_organizations_policy.tag_policy["production"].id
-  target_id = aws_organizations_account.ou_prod1.id
-}
+# 5. Attach tag policies to targets
+resource "aws_organizations_policy_attachment" "tag_policy_attachment" {
+  for_each = {
+    for pair in local.tag_policy_attachments :
+    "${pair.target_type}-${pair.target_key}-${pair.policy_name}" => pair
+  }
 
-resource "aws_organizations_policy_attachment" "management_policy_attachment" {
-  policy_id = aws_organizations_policy.tag_policy["management"].id
-  target_id = aws_organizations_organization.default.master_account_id
-}
-
-resource "aws_organizations_policy_attachment" "shared_services_policy_attachment" {
-  policy_id = aws_organizations_policy.tag_policy["shared-services"].id
-  target_id = aws_organizations_account.ou_main1.id
-}
-
-resource "aws_organizations_policy_attachment" "audit_policy_attachment" {
-  policy_id = aws_organizations_policy.tag_policy["audit"].id
-  target_id = aws_organizations_account.ou_main1.id
+  policy_id = each.value.policy_id
+  target_id = each.value.target_id
 }
