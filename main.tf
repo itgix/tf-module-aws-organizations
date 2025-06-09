@@ -1,4 +1,3 @@
-# TODO: should look into making the account amount to be a dynamic configuration instead of hardcoding
 resource "aws_organizations_organization" "default" {
   aws_service_access_principals = var.service_access_principals
 
@@ -7,60 +6,32 @@ resource "aws_organizations_organization" "default" {
   feature_set = "ALL"
 }
 
-resource "aws_organizations_organizational_unit" "main" {
-  name      = var.ou_main
+####################### NEW OU MAP ##############################
+resource "aws_organizations_organizational_unit" "ous" {
+  for_each  = toset(keys(var.accounts))
+  name      = each.key
   parent_id = aws_organizations_organization.default.roots[0].id
 }
 
-resource "aws_organizations_organizational_unit" "non_prod" {
-  name      = var.ou_non_prod
-  parent_id = aws_organizations_organization.default.roots[0].id
+###################### NEW ACCOUNTS #############################
+resource "aws_organizations_account" "accounts" {
+  for_each = merge([
+    for ou_name, ou_accounts in var.accounts : {
+      for acc_name, acc_data in ou_accounts :
+      "${acc_name}" => {
+        name  = acc_name
+        email = acc_data.email
+        ou    = ou_name
+      }
+    }
+  ]...)
+
+  name      = each.value.name
+  email     = each.value.email
+  parent_id = aws_organizations_organizational_unit.ous[each.value.ou].id
 }
 
-resource "aws_organizations_organizational_unit" "prod" {
-  name      = var.ou_prod
-  parent_id = aws_organizations_organization.default.roots[0].id
-}
 
-# TODO: fix these resource names to match the account names that they are creating
-# Shared Services account 
-resource "aws_organizations_account" "ou_main1" {
-  name      = var.main_accounts[0]
-  email     = var.main_accounts_emails[0]
-  parent_id = aws_organizations_organizational_unit.main.id
-}
-
-# Logging and Audit account
-resource "aws_organizations_account" "ou_main2" {
-  name      = var.main_accounts[1]
-  email     = var.main_accounts_emails[1]
-  parent_id = aws_organizations_organizational_unit.main.id
-}
-
-# Security account
-resource "aws_organizations_account" "ou_main3" {
-  name      = var.main_accounts[2]
-  email     = var.main_accounts_emails[2]
-  parent_id = aws_organizations_organizational_unit.main.id
-}
-
-resource "aws_organizations_account" "ou_non_prod1" {
-  name      = var.non_prod_accounts[0]
-  email     = var.non_prod_accounts_emails[0]
-  parent_id = aws_organizations_organizational_unit.non_prod.id
-}
-
-resource "aws_organizations_account" "ou_non_prod2" {
-  name      = var.non_prod_accounts[1]
-  email     = var.non_prod_accounts_emails[1]
-  parent_id = aws_organizations_organizational_unit.non_prod.id
-}
-
-resource "aws_organizations_account" "ou_prod1" {
-  name      = var.prod_accounts[0]
-  email     = var.prod_accounts_emails[0]
-  parent_id = aws_organizations_organizational_unit.prod.id
-}
 
 ######################################
 # Attaching Tag Policies to Org Units  
