@@ -1,3 +1,4 @@
+# Create the AWS Organization
 resource "aws_organizations_organization" "default" {
   aws_service_access_principals = var.service_access_principals
 
@@ -6,14 +7,14 @@ resource "aws_organizations_organization" "default" {
   feature_set = "ALL"
 }
 
-####################### NEW OU MAP ##############################
+# Create Organizational Units (OUs)
 resource "aws_organizations_organizational_unit" "ous" {
   for_each  = toset(keys(var.accounts))
   name      = each.key
   parent_id = aws_organizations_organization.default.roots[0].id
 }
 
-###################### NEW ACCOUNTS #############################
+# Create accounts in their respective OUs
 resource "aws_organizations_account" "accounts" {
   for_each = merge([
     for ou_name, ou_accounts in var.accounts : {
@@ -31,12 +32,7 @@ resource "aws_organizations_account" "accounts" {
   parent_id = aws_organizations_organizational_unit.ous[each.value.ou].id
 }
 
-
-
-######################################
-# Attaching Tag Policies to Org Units  
-######################################
-
+# Tag policy attachments
 # resource "aws_organizations_policy_attachment" "ou_prod_tag_policy_attachment" {
 #  policy_id = aws_organizations_policy.ou_prod_tag_policy.id
 #  target_id = aws_organizations_organizational_unit.prod.id
