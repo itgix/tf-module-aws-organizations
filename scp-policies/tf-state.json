@@ -11,8 +11,7 @@
       ],
       "Resource": [
         "arn:aws:s3:::*-tf-state-backend",
-        "arn:aws:s3:::*-tf-state-backend/*.tfstate",
-        "arn:aws:s3:::*-tf-state-backend/*.tfstate*"
+        "arn:aws:s3:::*-tf-state-backend/*.tfstate"
       ]
     }
   ]
