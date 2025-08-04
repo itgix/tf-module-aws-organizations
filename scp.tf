@@ -12,7 +12,9 @@ resource "aws_organizations_policy" "tagging_policy" {
 
 # allow only some regions to be used
 resource "aws_organizations_policy" "region_policy" {
-  content     = templatefile("${path.module}/scp-policies/regions.json", {})
+  content = templatefile("${path.module}/scp-policies/regions.json.tpl", {
+    allowed_regions = var.allowed_regions
+  })
   name        = "Region Policy"
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCP that restricts access to allowed AWS regions"
@@ -57,7 +59,13 @@ resource "aws_organizations_policy" "prevent_cloudtrail_logs_delete" {
 # policy that can be used to quarantine an account or OU by restricting access to all services except a specific role that can be used for investigating security incidents
 # TODO: prepare a quarantine role in all accounts
 resource "aws_organizations_policy" "quarantine_policy" {
-  content     = templatefile("${path.module}/scp-policies/quarantine-policy.json", {})
+  content = templatefile("${path.module}/scp-policies/quarantine-policy.json.tpl", {
+    dev_account             = var.dev_account
+    staging_account         = var.staging_account
+    prod_account            = var.prod_account
+    logging_account         = var.logging_account
+    shared_services_account = var.shared_services_account
+  })
   name        = "Quarantine Policy"
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCP that can be assigned on any account or OU to quarantine it by restricting access to all services except a certain role that will be used for security incident investigation"

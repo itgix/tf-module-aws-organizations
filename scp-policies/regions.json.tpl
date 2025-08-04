@@ -51,10 +51,7 @@
       "Resource": "*",
       "Condition": {
         "StringNotEquals": {
-          "aws:RequestedRegion": [
-            "eu-central-1",
-            "us-east-1"
-          ]
+          "aws:RequestedRegion": ${allowed_regions}
         }
       }
     }

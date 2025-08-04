@@ -6,7 +6,7 @@
             },
             "tag_value": {
                 "@@assign": [
-                    "shared-services"
+                    "${shared_services_environment_tag}"
                 ]
             }
         }

@@ -6,7 +6,7 @@
             },
             "tag_value": {
                 "@@assign": [
-                    "audit"
+                    "${dev_environment_tag}"
                 ]
             }
         }

@@ -2,14 +2,33 @@
 # Tag Policies
 ####################################
 
-# 1. Collect all tag policy files
+# 1. Collect all tag policy files and render them with the variables passed
 locals {
+  all_tag_policy_files = concat(
+    tolist(fileset("${path.module}/tag-policies", "*.json")),
+    tolist(fileset("${path.module}/tag-policies", "*.json.tpl"))
+  )
+
   tag_policy_files = {
-    for f in fileset("${path.module}/tag-policies", "*.json") :
-    split(".", basename(f))[0] => {
-      name = split(".", basename(f))[0],
-      path = f
+    for f in local.all_tag_policy_files :
+    trimsuffix(trimsuffix(basename(f), ".json.tpl"), ".json") => {
+      name   = trimsuffix(trimsuffix(basename(f), ".json.tpl"), ".json")
+      path   = f
+      is_tpl = endswith(f, ".tpl")
     }
+  }
+  rendered_tag_policy_content = {
+    for name, value in local.tag_policy_files :
+    name => value.is_tpl
+    ? templatefile("${path.module}/tag-policies/${value.path}", {
+      logging_and_auditing_environment_tag = var.logging_and_auditing_environment_tag,
+      dev_environment_tag                  = var.dev_environment_tag,
+      management_environment_tag           = var.management_environment_tag,
+      production_environment_tag           = var.production_environment_tag,
+      shared_services_environment_tag      = var.shared_services_environment_tag,
+      staging_environment_tag              = var.staging_environment_tag
+    })
+    : file("${path.module}/tag-policies/${value.path}")
   }
 }
 
@@ -19,7 +38,7 @@ resource "aws_organizations_policy" "tag_policy" {
 
   name        = each.value.name
   description = "Tag policy - ${each.value.name}"
-  content     = file("${path.module}/tag-policies/${each.value.path}")
+  content     = local.rendered_tag_policy_content[each.key]
   type        = "TAG_POLICY"
 }
 
