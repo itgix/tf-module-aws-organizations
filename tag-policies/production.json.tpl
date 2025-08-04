@@ -6,7 +6,7 @@
             },
             "tag_value": {
                 "@@assign": [
-                    "management"
+                    "${production_environment_tag}"
                 ]
             }
         }

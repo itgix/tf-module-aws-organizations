@@ -6,7 +6,7 @@
             },
             "tag_value": {
                 "@@assign": [
-                    "stage"
+                    "${staging_environment_tag}"
                 ]
             }
         }

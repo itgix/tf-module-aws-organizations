@@ -67,3 +67,71 @@ variable "backup_admin_account_id" {
   default     = ""
 }
 
+# SCPs
+variable "allowed_regions" {
+  type        = string
+  description = "A JSON-formatted string representing a list of AWS regions allowed by the SCP or tag policy templates. Example: \"[\\\"us-east-1\\\", \\\"eu-central-1\\\"]\". This value is inserted directly into policy templates and must be a valid JSON array of strings."
+  default     = "[\"us-east-1\", \"eu-central-1\"]"
+}
+
+variable "dev_account" {
+  type        = string
+  description = "Account ID for development"
+}
+
+variable "staging_account" {
+  type        = string
+  description = "Account ID for staging"
+}
+
+variable "prod_account" {
+  type        = string
+  description = "Account ID for production"
+}
+
+variable "logging_account" {
+  type        = string
+  description = "Account ID for logging and audit"
+}
+
+variable "shared_services_account" {
+  type        = string
+  description = "Account ID for shared services"
+}
+
+# Tagging Policies
+variable "logging_and_auditing_environment_tag" {
+  type        = string
+  default     = "audit"
+  description = "Environment tag value used in the audit tagging policy."
+}
+
+variable "dev_environment_tag" {
+  type        = string
+  default     = "dev"
+  description = "Environment tag value used in the development tagging policy."
+}
+
+variable "management_environment_tag" {
+  type        = string
+  default     = "management"
+  description = "Environment tag value used in the management tagging policy."
+}
+
+variable "production_environment_tag" {
+  type        = string
+  default     = "production"
+  description = "Environment tag value used in the production tagging policy."
+}
+
+variable "shared_services_environment_tag" {
+  type        = string
+  default     = "shared-services"
+  description = "Environment tag value used in the shared services tagging policy."
+}
+
+variable "staging_environment_tag" {
+  type        = string
+  default     = "stage"
+  description = "Environment tag value used in the staging tagging policy."
+}
