@@ -1,24 +1,24 @@
 ## Root of organization policies
 resource "aws_organizations_policy_attachment" "tagging_policy" {
-  count     = var.remove_policy_attachments ? 0 : 1
+  count     = var.attach_default_policies ? 1 : 0
   policy_id = aws_organizations_policy.tagging_policy.id
   target_id = aws_organizations_organization.default.roots[0].id
 }
 
 resource "aws_organizations_policy_attachment" "region_policy" {
-  count     = var.remove_policy_attachments ? 0 : 1
+  count     = var.attach_default_policies ? 1 : 0
   policy_id = aws_organizations_policy.region_policy.id
   target_id = aws_organizations_organization.default.roots[0].id
 }
 
 resource "aws_organizations_policy_attachment" "prevent_tf_delete_policy" {
-  count     = var.remove_policy_attachments ? 0 : 1
+  count     = var.attach_default_policies ? 1 : 0
   policy_id = aws_organizations_policy.prevent_tf_delete_policy.id
   target_id = aws_organizations_organization.default.roots[0].id
 }
 
 resource "aws_organizations_policy_attachment" "combined_org_policy" {
-  count     = var.remove_policy_attachments ? 0 : 1
+  count     = var.attach_default_policies ? 1 : 0
   policy_id = aws_organizations_policy.combined_org_policy.id
   target_id = aws_organizations_organization.default.roots[0].id
 }

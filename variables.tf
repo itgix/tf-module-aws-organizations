@@ -68,9 +68,9 @@ variable "backup_admin_account_id" {
 }
 
 # SCPs
-variable "remove_policy_attachments" {
+variable "attach_default_policies" {
   type        = bool
-  default     = false
+  default     = true
   description = "Whether to remove the default SCP attachments - for some cases where we want to detach them for a period of time"
 }
 
