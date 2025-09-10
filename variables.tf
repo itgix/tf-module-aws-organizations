@@ -68,6 +68,12 @@ variable "backup_admin_account_id" {
 }
 
 # SCPs
+variable "remove_policy_attachments" {
+  type        = bool
+  default     = false
+  description = "Whether to remove the default SCP attachments - for some cases where we want to detach them for a period of time"
+}
+
 variable "allowed_regions" {
   type        = string
   description = "A JSON-formatted string representing a list of AWS regions allowed by the SCP or tag policy templates. Example: \"[\\\"us-east-1\\\", \\\"eu-central-1\\\"]\". This value is inserted directly into policy templates and must be a valid JSON array of strings."
