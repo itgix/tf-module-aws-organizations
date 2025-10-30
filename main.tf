@@ -12,6 +12,11 @@ resource "aws_organizations_organizational_unit" "ous" {
   for_each  = toset(keys(var.accounts))
   name      = each.key
   parent_id = aws_organizations_organization.default.roots[0].id
+
+  // when OUs are imported, Terraform still tried to replace them even though they match the IDs that are already in the state
+  lifecycle {
+    ignore_changes = [parent_id]
+  }
 }
 
 # Create accounts in their respective OUs
