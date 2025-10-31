@@ -77,7 +77,6 @@ variable "attach_default_policies" {
 variable "allowed_regions" {
   type        = string
   description = "A JSON-formatted string representing a list of AWS regions allowed by the SCP or tag policy templates. Example: \"[\\\"us-east-1\\\", \\\"eu-central-1\\\"]\". This value is inserted directly into policy templates and must be a valid JSON array of strings."
-  default     = "[\"us-east-1\", \"eu-central-1\"]"
 }
 
 variable "dev_account" {
