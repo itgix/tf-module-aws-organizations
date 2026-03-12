@@ -8,7 +8,6 @@
         "iam:CreateUser",
         "iam:CreateAccessKey",
         "iam:CreateGroup",
-        "organizations:LeaveOrganization"
       ],
       "Resource": "*"
     },
