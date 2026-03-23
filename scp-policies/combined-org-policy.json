@@ -2,12 +2,12 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "PreventIAMUser",
+      "Sid": "PreventIAMUserCreation",
       "Effect": "Deny",
       "Action": [
         "iam:CreateUser",
         "iam:CreateAccessKey",
-        "iam:CreateGroup",
+        "iam:CreateGroup"
       ],
       "Resource": "*"
     },
