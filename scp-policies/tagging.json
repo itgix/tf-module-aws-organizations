@@ -31,7 +31,8 @@
       "Sid": "DenyRdsInstanceWithoutTagsExceptAutoscale",
       "Effect": "Deny",
       "Action": [
-        "rds:CreateDBInstance"
+        "rds:CreateDBInstance",
+        "rds:ModifyDBInstance"
       ],
       "Resource": "*",
       "Condition": {
