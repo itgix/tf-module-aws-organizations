@@ -13,7 +13,6 @@
         "eks:CreateNodegroup",
         "ecs:CreateCluster",
         "ecs:CreateService",
-        "rds:CreateDBInstance",
         "rds:CreateDBCluster",
         "rds:CreateDBProxy",
         "rds:CreateGlobalCluster"
@@ -25,6 +24,25 @@
           "aws:RequestTag/Environment": "true",
           "aws:RequestTag/CostCenter": "true",
           "aws:RequestTag/Application": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRdsCreateDBInstanceWithoutTagsExceptAuroraAutoscale",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Project": "true",
+          "aws:RequestTag/Environment": "true",
+          "aws:RequestTag/CostCenter": "true",
+          "aws:RequestTag/Application": "true"
+        },
+        "ArnNotLike": {
+          "aws:PrincipalArn": "arn:aws:iam::*:role/aws-service-role/rds.amazonaws.com/*"
         }
       }
     },
