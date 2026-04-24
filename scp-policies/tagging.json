@@ -28,7 +28,7 @@
       }
     },
     {
-      "Sid": "DenyRdsCreateDBInstanceWithoutTagsExceptAuroraAutoscale",
+      "Sid": "DenyRdsInstanceWithoutTagsExceptAutoscale",
       "Effect": "Deny",
       "Action": [
         "rds:CreateDBInstance"
@@ -41,8 +41,13 @@
           "aws:RequestTag/CostCenter": "true",
           "aws:RequestTag/Application": "true"
         },
-        "ArnNotLike": {
-          "aws:PrincipalArn": "arn:aws:iam::*:role/aws-service-role/://amazonaws.com"
+        "StringNotLike": {
+          "aws:PrincipalArn": [
+            "arn:aws:iam::*:role/aws-service-role/rds.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_RDSInstance"
+          ]
+        },
+        "Bool": {
+          "aws:ViaAWSService": "false"
         }
       }
     },
