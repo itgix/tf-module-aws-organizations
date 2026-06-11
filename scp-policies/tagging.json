@@ -28,11 +28,10 @@
       }
     },
     {
-      "Sid": "DenyRdsInstanceWithoutTagsExceptAutoscale",
+      "Sid": "DenyCreateDBInstanceWithoutTagsExceptAutoscale",
       "Effect": "Deny",
       "Action": [
-        "rds:CreateDBInstance",
-        "rds:ModifyDBInstance"
+        "rds:CreateDBInstance"
       ],
       "Resource": "*",
       "Condition": {
@@ -41,6 +40,30 @@
           "aws:RequestTag/Environment": "true",
           "aws:RequestTag/CostCenter": "true",
           "aws:RequestTag/Application": "true"
+        },
+        "StringNotLike": {
+          "aws:PrincipalArn": [
+            "arn:aws:iam::*:role/aws-service-role/rds.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_RDSInstance"
+          ]
+        },
+        "Bool": {
+          "aws:ViaAWSService": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyModifyDBInstanceWithoutTagsExceptAutoscale",
+      "Effect": "Deny",
+      "Action": [
+        "rds:ModifyDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Null": {
+          "aws:ResourceTag/Project": "true",
+          "aws:ResourceTag/Environment": "true",
+          "aws:ResourceTag/CostCenter": "true",
+          "aws:ResourceTag/Application": "true"
         },
         "StringNotLike": {
           "aws:PrincipalArn": [
