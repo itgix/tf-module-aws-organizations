@@ -21,7 +21,7 @@ locals {
     for name, value in local.tag_policy_files :
     name => value.is_tpl
     ? templatefile("${path.module}/tag-policies/${value.path}", {
-      logging_and_auditing_environment_tag = var.logging_and_auditing_environment_tag,
+      logging_and_auditing_environment_tag = var.logging_and_audit_environment_tag,
       dev_environment_tag                  = var.dev_environment_tag,
       management_environment_tag           = var.management_environment_tag,
       production_environment_tag           = var.production_environment_tag,

@@ -105,7 +105,7 @@ variable "shared_services_account" {
 }
 
 # Tagging Policies
-variable "logging_and_auditing_environment_tag" {
+variable "logging_and_audit_environment_tag" {
   type        = string
   default     = "audit"
   description = "Environment tag value used in the audit tagging policy."
