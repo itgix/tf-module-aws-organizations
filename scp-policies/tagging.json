@@ -109,6 +109,28 @@
           "aws:RequestTag/Application": "true"
         }
       }
+    },
+    {
+      "Sid": "DenyDataResourcesWithoutTags",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:CreateTable",
+        "elasticfilesystem:CreateFileSystem",
+        "ec2:CreateVolume"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:*:*:table/*",
+        "arn:aws:elasticfilesystem:*:*:file-system/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Project": "true",
+          "aws:RequestTag/Environment": "true",
+          "aws:RequestTag/CostCenter": "true",
+          "aws:RequestTag/Application": "true"
+        }
+      }
     }
   ]
 }
