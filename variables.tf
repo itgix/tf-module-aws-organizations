@@ -79,6 +79,13 @@ variable "allowed_regions" {
   description = "A JSON-formatted string representing a list of AWS regions allowed by the SCP or tag policy templates. Example: \"[\\\"us-east-1\\\", \\\"eu-central-1\\\"]\". This value is inserted directly into policy templates and must be a valid JSON array of strings."
 }
 
+# Opt-in (enable) regions across the whole organization (management + member accounts)
+variable "opt_in_regions" {
+  type        = list(string)
+  default     = []
+  description = "List of opt-in AWS Regions to enable across the whole org. Supported opt-in regions (as of Aug 2026): af-south-1, ap-east-1, ap-east-2, ap-south-2, ap-southeast-3, ap-southeast-4, ap-southeast-5, ap-southeast-6, ap-southeast-7, ca-west-1, eu-central-2, eu-south-1, eu-south-2, il-central-1, me-central-1, me-south-1, mx-central-1."
+}
+
 variable "dev_account" {
   type        = string
   description = "Account ID for development"

@@ -14,6 +14,7 @@ Part of the [ITGix AWS Landing Zone](https://itgix.com/itgix-landing-zone/).
 - Tag policies with root/OU/account attachments
 - Delegated administrator registrations
 - *(Optional)* Backup policy
+- *(Optional)* Region opt-in (enable) across the management and all member accounts
 
 ## Inputs
 
@@ -30,6 +31,7 @@ Part of the [ITGix AWS Landing Zone](https://itgix.com/itgix-landing-zone/).
 | `backup_admin_account_id` | Delegated admin account ID for backup service | `string` | `""` | no |
 | `attach_default_policies` | Whether to attach the default SCP policies | `bool` | `true` | no |
 | `allowed_regions` | JSON-formatted string of allowed AWS regions | `string` | — | yes |
+| `opt_in_regions` | List of opt-in AWS Regions to enable across the whole org (management + all member accounts). Requires all features enabled and trusted access for `account.amazonaws.com` | `list(string)` | `[]` | no |
 | `dev_account` | Account ID for development | `string` | — | yes |
 | `staging_account` | Account ID for staging | `string` | — | yes |
 | `prod_account` | Account ID for production | `string` | — | yes |
@@ -80,6 +82,7 @@ module "organizations" {
 
   tag_policy_attachments = []
   allowed_regions        = "[\"eu-central-1\", \"us-east-1\"]"
+  opt_in_regions         = ["ca-west-1"]
   dev_account            = "333333333333"
   staging_account        = "444444444444"
   prod_account           = "555555555555"
