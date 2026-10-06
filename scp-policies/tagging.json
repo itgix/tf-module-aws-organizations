@@ -6,8 +6,6 @@
       "Effect": "Deny",
       "Action": [
         "secretsmanager:CreateSecret",
-        "elasticache:CreateCacheCluster",
-        "elasticache:CreateServerlessCache",
         "lambda:CreateFunction",
         "eks:CreateCluster",
         "eks:CreateNodegroup",
@@ -76,10 +74,16 @@
       }
     },
     {
-      "Sid": "DenyElastiCacheReplicationGroupWithoutTags",
+      "Sid": "DenyElastiCacheCreateWithoutTags",
       "Effect": "Deny",
-      "Action": "elasticache:CreateReplicationGroup",
+      "Action": [
+        "elasticache:CreateServerlessCache",
+        "elasticache:CreateCacheCluster",
+        "elasticache:CreateReplicationGroup"
+      ],
       "Resource": [
+        "arn:aws:elasticache:*:*:serverlesscache:*",
+        "arn:aws:elasticache:*:*:cluster:*",
         "arn:aws:elasticache:*:*:replicationgroup:*"
       ],
       "Condition": {
