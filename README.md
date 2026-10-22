@@ -43,6 +43,21 @@ Part of the [ITGix AWS Landing Zone](https://itgix.com/itgix-landing-zone/).
 | `production_environment_tag` | Environment tag value for production tagging policy | `string` | `"production"` | no |
 | `shared_services_environment_tag` | Environment tag value for shared services tagging policy | `string` | `"shared-services"` | no |
 | `staging_environment_tag` | Environment tag value for staging tagging policy | `string` | `"stage"` | no |
+| `identity_center_protected_account_ids` | Accounts (usually the Identity Center delegated admin) to attach the Identity Center protection SCP to. The SCP is created only when not empty | `list(string)` | `[]` | no |
+| `identity_center_protected_group_ids` | Identity Store group IDs whose memberships/attributes cannot be changed from the protected accounts | `list(string)` | `[]` | no |
+| `identity_center_protected_user_ids` | Identity Store user IDs that cannot be updated/deleted from the protected accounts | `list(string)` | `[]` | no |
+| `identity_center_protection_deny_credential_reset` | Deny admin password resets and MFA device management from the protected accounts (applies to all users, no resource-level support) | `bool` | `true` | no |
+
+## Identity Center protection SCP
+
+When Identity Center administration is delegated to a member account, the delegated admin cannot change permission sets or assignments of the management account, but it can still change group memberships, users and the identity source. `scp-policies/identity-center-protection.json.tpl` (created in `scp.tf`, attached in `attach-scp.tf`) is an SCP, attached to `identity_center_protected_account_ids`, that denies:
+
+- membership and group changes on `identity_center_protected_group_ids`
+- updates and deletion of `identity_center_protected_user_ids`
+- administrator password / MFA resets (optional, all users)
+- identity source, external IdP, SCIM provisioning and directory MFA settings changes
+
+These operations then remain possible only from the management account, which is not affected by SCPs.
 
 ## Outputs
 

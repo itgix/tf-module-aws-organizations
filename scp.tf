@@ -70,3 +70,24 @@ resource "aws_organizations_policy" "quarantine_policy" {
   type        = "SERVICE_CONTROL_POLICY"
   description = "SCP that can be assigned on any account or OU to quarantine it by restricting access to all services except a certain role that will be used for security incident investigation"
 }
+
+# protect the access to the management account from the Identity Center delegated admin account (usually Security)
+# the delegated admin cannot change permission sets / assignments of the management account, but it can change group
+# memberships, users and the identity source - this SCP denies (from the accounts it is attached to):
+#   - membership / group changes on the protected groups and updates / deletion of the protected users
+#   - administrator password / MFA resets (sso-directory has no resource-level permissions, so it applies to all users - optional)
+#   - identity source, external IdP, SCIM provisioning and directory MFA settings changes
+# the management account is not affected by SCPs, so these changes remain possible only from the management account
+# created only when identity_center_protected_account_ids is set, attached to those accounts in attach-scp.tf
+resource "aws_organizations_policy" "identity_center_protection" {
+  count = length(var.identity_center_protected_account_ids) > 0 ? 1 : 0
+
+  content = templatefile("${path.module}/scp-policies/identity-center-protection.json.tpl", {
+    protected_group_arns  = [for id in var.identity_center_protected_group_ids : "arn:aws:identitystore:::group/${id}"]
+    protected_user_arns   = [for id in var.identity_center_protected_user_ids : "arn:aws:identitystore:::user/${id}"]
+    deny_credential_reset = var.identity_center_protection_deny_credential_reset
+  })
+  name        = "Identity Center Protection Policy"
+  type        = "SERVICE_CONTROL_POLICY"
+  description = "SCP for the Identity Center delegated admin account - prevents escalation to the management account through group memberships, users, credentials or identity source changes"
+}

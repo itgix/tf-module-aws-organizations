@@ -57,3 +57,12 @@ resource "aws_organizations_policy_attachment" "scp_to_ou" {
   policy_id = each.value.policy_id
   target_id = each.value.ou_id
 }
+
+## Account policies
+# Identity Center protection SCP - attached directly to the Identity Center delegated admin account(s)
+resource "aws_organizations_policy_attachment" "identity_center_protection" {
+  for_each = toset(var.identity_center_protected_account_ids)
+
+  policy_id = aws_organizations_policy.identity_center_protection[0].id
+  target_id = each.value
+}

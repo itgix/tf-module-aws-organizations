@@ -147,3 +147,28 @@ variable "staging_environment_tag" {
   default     = "stage"
   description = "Environment tag value used in the staging tagging policy."
 }
+
+# Identity Center protection SCP (see identity-center-protection.tf)
+variable "identity_center_protected_account_ids" {
+  type        = list(string)
+  default     = []
+  description = "Account IDs (usually the Identity Center delegated admin, e.g. Security) to which the Identity Center protection SCP is attached. The SCP is created only when this list is not empty."
+}
+
+variable "identity_center_protected_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "Identity Store group IDs (e.g. the group with access to the management account) whose memberships and attributes cannot be changed from the protected accounts."
+}
+
+variable "identity_center_protected_user_ids" {
+  type        = list(string)
+  default     = []
+  description = "Identity Store user IDs (e.g. management account admins / break-glass users) that cannot be updated or deleted from the protected accounts."
+}
+
+variable "identity_center_protection_deny_credential_reset" {
+  type        = bool
+  default     = true
+  description = "Deny administrator password resets and MFA device management from the protected accounts. sso-directory has no resource-level permissions, so this applies to all users; those operations then have to be done from the management account. Users can still manage their own password and MFA from the access portal."
+}
