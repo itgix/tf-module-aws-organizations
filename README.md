@@ -22,11 +22,11 @@ Part of the [ITGix AWS Landing Zone](https://itgix.com/itgix-landing-zone/).
 |------|-------------|------|---------|----------|
 | `service_access_principals` | List of service access principals | `list(string)` | — | yes |
 | `enabled_policy_types` | Enabled policy types for the organization | `list(string)` | — | yes |
-| `accounts` | Map of accounts grouped by OU | `map(map(object({email=string})))` | `{}` | no |
+| `accounts` | Map of accounts to create, grouped by OU. Optional per account: `role_name` (default `OrganizationAccountAccessRole`), `iam_user_access_to_billing` (default `ALLOW`), `close_on_deletion` (default `false`), `tags`. `role_name` and `iam_user_access_to_billing` are applied only at creation | `map(map(object({email=string, role_name=optional(string), iam_user_access_to_billing=optional(string), close_on_deletion=optional(bool), tags=optional(map(string))})))` | `{}` | no |
 | `scp_attachments` | List of SCP policy to OU attachment objects | `list(object({policy_name=string, ou_name=string}))` | `[]` | no |
 | `tag_policy_attachments` | List of tag policy attachments to root, OUs, or accounts | `list(object({policy_name=string, target_type=string, target_key=string}))` | — | yes |
 | `management_account_id` | AWS Organizations management account ID | `string` | — | yes |
-| `delegated_admins` | Accounts to register as delegated admins for services | `list(object({account_id=string, service_principal=string}))` | — | yes |
+| `delegated_admins` | Accounts to register as delegated admins for services. Set exactly one of `account_name` (key in `accounts`, for accounts created by this module) or `account_id` | `list(object({account_name=optional(string), account_id=optional(string), service_principal=string}))` | — | yes |
 | `include_backup_policy` | Whether to attach a backup-specific Organizations policy | `bool` | `false` | no |
 | `backup_admin_account_id` | Delegated admin account ID for backup service | `string` | `""` | no |
 | `attach_default_policies` | Whether to attach the default SCP policies | `bool` | `true` | no |
@@ -43,7 +43,8 @@ Part of the [ITGix AWS Landing Zone](https://itgix.com/itgix-landing-zone/).
 | `production_environment_tag` | Environment tag value for production tagging policy | `string` | `"production"` | no |
 | `shared_services_environment_tag` | Environment tag value for shared services tagging policy | `string` | `"shared-services"` | no |
 | `staging_environment_tag` | Environment tag value for staging tagging policy | `string` | `"stage"` | no |
-| `identity_center_protected_account_ids` | Accounts (usually the Identity Center delegated admin) to attach the Identity Center protection SCP to. The SCP is created only when not empty | `list(string)` | `[]` | no |
+| `identity_center_protected_account_ids` | Account IDs (usually the Identity Center delegated admin) to attach the Identity Center protection SCP to. The SCP is created only when this or `identity_center_protected_account_names` is not empty | `list(string)` | `[]` | no |
+| `identity_center_protected_account_names` | Same as above, for accounts created by this module (keys in `accounts`) | `list(string)` | `[]` | no |
 | `identity_center_protected_group_ids` | Identity Store group IDs whose memberships/attributes cannot be changed from the protected accounts | `list(string)` | `[]` | no |
 | `identity_center_protected_user_ids` | Identity Store user IDs that cannot be updated/deleted from the protected accounts | `list(string)` | `[]` | no |
 | `identity_center_protection_deny_credential_reset` | Deny admin password resets and MFA device management from the protected accounts (applies to all users, no resource-level support) | `bool` | `true` | no |
@@ -63,8 +64,18 @@ These operations then remain possible only from the management account, which is
 
 | Name | Description |
 |------|-------------|
+| `organization_id` | ID of the AWS Organization |
+| `organization_arn` | ARN of the AWS Organization |
+| `root_id` | ID of the organization root |
+| `organizational_unit_ids` | Map of OU names to their IDs |
 | `account_ids` | Map of account logical names to their AWS account IDs |
 | `account_names` | List of account names |
+
+## Accounts created by this module
+
+Account IDs are not known before apply, so inputs that are used as `for_each` keys (`delegated_admins`, Identity Center protection SCP attachments) reference such accounts by name (`account_name` / `identity_center_protected_account_names`). Plain ID inputs (e.g. `dev_account`, `backup_admin_account_id`) can take `module.<name>.account_ids["<account>"]`.
+
+Accounts are created with the `OrganizationAccountAccessRole` role (trusted by the management account), used to bootstrap them. On destroy an account is only removed from the organization unless `close_on_deletion = true`.
 
 ## Usage Example
 
@@ -90,7 +101,7 @@ module "organizations" {
 
   delegated_admins = [
     {
-      account_id        = "222222222222"
+      account_name      = "prod"
       service_principal = "guardduty.amazonaws.com"
     }
   ]

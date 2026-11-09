@@ -10,11 +10,27 @@ variable "enabled_policy_types" {
 
 # Accounts to create under each OU
 variable "accounts" {
-  description = "Map of accounts grouped by OU"
+  description = "Map of accounts to create, grouped by OU (OU name => account name => account settings). role_name and iam_user_access_to_billing are applied only when the account is created."
   type = map(map(object({
-    email = string
+    email                      = string
+    role_name                  = optional(string, "OrganizationAccountAccessRole")
+    iam_user_access_to_billing = optional(string, "ALLOW")
+    close_on_deletion          = optional(bool, false)
+    tags                       = optional(map(string), {})
   })))
   default = {}
+
+  validation {
+    condition = alltrue(flatten([
+      for ou in values(var.accounts) : [for acc in values(ou) : contains(["ALLOW", "DENY"], acc.iam_user_access_to_billing)]
+    ]))
+    error_message = "iam_user_access_to_billing must be ALLOW or DENY."
+  }
+
+  validation {
+    condition     = length(flatten([for ou in values(var.accounts) : keys(ou)])) == length(distinct(flatten([for ou in values(var.accounts) : keys(ou)])))
+    error_message = "Account names must be unique across all OUs."
+  }
 }
 
 # Attach SCPs to OUs
@@ -45,10 +61,16 @@ variable "management_account_id" {
 # List of delegated service admins
 variable "delegated_admins" {
   type = list(object({
-    account_id        = string
+    account_name      = optional(string) # key in var.accounts - for accounts created by this module
+    account_id        = optional(string) # for accounts not managed by this module
     service_principal = string
   }))
-  description = "Accounts to register as delegated admins for services"
+  description = "Accounts to register as delegated admins for services. Set exactly one of account_name (account created by this module) or account_id."
+
+  validation {
+    condition     = alltrue([for d in var.delegated_admins : (d.account_name == null) != (d.account_id == null)])
+    error_message = "Each delegated admin must set exactly one of account_name or account_id."
+  }
 }
 
 
@@ -152,7 +174,13 @@ variable "staging_environment_tag" {
 variable "identity_center_protected_account_ids" {
   type        = list(string)
   default     = []
-  description = "Account IDs (usually the Identity Center delegated admin, e.g. Security) to which the Identity Center protection SCP is attached. The SCP is created only when this list is not empty."
+  description = "Account IDs (usually the Identity Center delegated admin, e.g. Security) to which the Identity Center protection SCP is attached. For accounts created by this module use identity_center_protected_account_names. The SCP is created only when at least one of the two lists is not empty."
+}
+
+variable "identity_center_protected_account_names" {
+  type        = list(string)
+  default     = []
+  description = "Names (keys in var.accounts) of accounts created by this module to which the Identity Center protection SCP is attached."
 }
 
 variable "identity_center_protected_group_ids" {

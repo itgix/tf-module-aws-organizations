@@ -80,7 +80,7 @@ resource "aws_organizations_policy" "quarantine_policy" {
 # the management account is not affected by SCPs, so these changes remain possible only from the management account
 # created only when identity_center_protected_account_ids is set, attached to those accounts in attach-scp.tf
 resource "aws_organizations_policy" "identity_center_protection" {
-  count = length(var.identity_center_protected_account_ids) > 0 ? 1 : 0
+  count = length(var.identity_center_protected_account_ids) + length(var.identity_center_protected_account_names) > 0 ? 1 : 0
 
   content = templatefile("${path.module}/scp-policies/identity-center-protection.json.tpl", {
     protected_group_arns  = [for id in var.identity_center_protected_group_ids : "arn:aws:identitystore:::group/${id}"]

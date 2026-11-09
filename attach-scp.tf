@@ -60,8 +60,13 @@ resource "aws_organizations_policy_attachment" "scp_to_ou" {
 
 ## Account policies
 # Identity Center protection SCP - attached directly to the Identity Center delegated admin account(s)
+# keyed by account ID (identity_center_protected_account_ids) or account name (identity_center_protected_account_names),
+# so the keys are known at plan time also for accounts that are not created yet
 resource "aws_organizations_policy_attachment" "identity_center_protection" {
-  for_each = toset(var.identity_center_protected_account_ids)
+  for_each = merge(
+    { for id in var.identity_center_protected_account_ids : id => id },
+    { for name in var.identity_center_protected_account_names : name => aws_organizations_account.accounts[name].id }
+  )
 
   policy_id = aws_organizations_policy.identity_center_protection[0].id
   target_id = each.value
